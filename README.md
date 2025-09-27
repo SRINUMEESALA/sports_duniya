@@ -2,7 +2,7 @@
 
 React Native app for T20 cricket match commentary feed.
 
-## Live Score App
+### App Preview
 
 <table>
   <tr>
