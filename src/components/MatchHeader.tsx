@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { CricketEvent } from "../types/CricketEvent";
 
 interface MatchHeaderProps {
   totalRuns: number;
@@ -7,6 +8,7 @@ interface MatchHeaderProps {
   currentOver: number;
   ballsInOver: number;
   matchStatus: string;
+  latestEvent?: CricketEvent;
 }
 
 const MatchHeader = ({
@@ -15,7 +17,22 @@ const MatchHeader = ({
   currentOver,
   ballsInOver,
   matchStatus,
+  latestEvent,
 }: MatchHeaderProps) => {
+  const getHeaderBackgroundColor = () => {
+    if (!latestEvent) return "#1a1a2e";
+
+    switch (latestEvent.type) {
+      case "WICKET":
+        return "#c62828";
+      case "SIX":
+      case "BOUNDARY":
+        return "#388e3c";
+      default:
+        return "#1a1a2e";
+    }
+  };
+
   const getStatusStyle = (status: string) => {
     switch (status.toLowerCase()) {
       case "match start":
@@ -35,7 +52,9 @@ const MatchHeader = ({
   };
 
   return (
-    <View style={styles.header}>
+    <View
+      style={[styles.header, { backgroundColor: getHeaderBackgroundColor() }]}
+    >
       <View style={styles.headerGradient}>
         <View style={styles.scoreContainer}>
           <Text style={styles.matchTitle}>T20 World Cup 2024</Text>

@@ -34,6 +34,8 @@ const CommentaryFeed = () => {
     .filter((event) => event.type === EVENT_TYPES.MATCH_STATUS)
     .slice(-1)[0];
 
+  const latestEvent = events.slice(-1)[0];
+
   const flatListRef = useRef(null);
   const shouldAutoScroll = useRef(true);
   const insets = useSafeAreaInsets();
@@ -99,6 +101,7 @@ const CommentaryFeed = () => {
         currentOver={score.currentOver}
         ballsInOver={score.ballsInOver}
         matchStatus={score.matchStatus}
+        latestEvent={latestEvent}
       />
 
       <View

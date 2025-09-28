@@ -28,52 +28,23 @@ const mockEvents = [
     },
   },
   {
-    type: EVENT_TYPES.BOUNDARY,
+    type: EVENT_TYPES.BALL,
     payload: {
-      runs: 4,
-      commentary: "Classic cover drive, races to the boundary!",
+      runs: 0,
+      commentary: "Dot ball, good line and length.",
       batsman: "V. Kohli",
       bowler: "J. Anderson",
       over: 0.2,
     },
   },
   {
-    type: EVENT_TYPES.SIX,
+    type: EVENT_TYPES.BOUNDARY,
     payload: {
-      runs: 6,
-      commentary: "Massive six over long-on! What a shot!",
+      runs: 4,
+      commentary: "Classic cover drive, races to the boundary!",
       batsman: "V. Kohli",
       bowler: "J. Anderson",
       over: 0.3,
-    },
-  },
-  {
-    type: EVENT_TYPES.BALL,
-    payload: {
-      runs: 0,
-      commentary: "Dot ball, good line and length.",
-      batsman: "R. Sharma",
-      bowler: "S. Broad",
-      over: 0.4,
-    },
-  },
-  {
-    type: EVENT_TYPES.WICKET,
-    payload: {
-      playerOut: "R. Sharma",
-      dismissal: DISMISSAL_TYPES.LBW,
-      commentary: "Big appeal... and he's out! LBW!",
-      batsman: "R. Sharma",
-      bowler: "S. Broad",
-      over: 0.5,
-    },
-  },
-  {
-    type: EVENT_TYPES.OVER_COMPLETE,
-    payload: {
-      over: 1,
-      runs: 14,
-      commentary: "End of over 1. 14 runs from it.",
     },
   },
   {
@@ -83,17 +54,7 @@ const mockEvents = [
       commentary: "Quick single, good fielding.",
       batsman: "V. Kohli",
       bowler: "J. Anderson",
-      over: 1.1,
-    },
-  },
-  {
-    type: EVENT_TYPES.BOUNDARY,
-    payload: {
-      runs: 4,
-      commentary: "Beautiful straight drive!",
-      batsman: "V. Kohli",
-      bowler: "J. Anderson",
-      over: 1.2,
+      over: 0.4,
     },
   },
   {
@@ -103,17 +64,15 @@ const mockEvents = [
       commentary: "Single to deep square leg.",
       batsman: "V. Kohli",
       bowler: "J. Anderson",
-      over: 1.3,
+      over: 0.5,
     },
   },
   {
-    type: EVENT_TYPES.SIX,
+    type: EVENT_TYPES.OVER_COMPLETE,
     payload: {
-      runs: 6,
-      commentary: "Another six! This is getting expensive!",
-      batsman: "V. Kohli",
-      bowler: "J. Anderson",
-      over: 1.4,
+      over: 1,
+      runs: 8,
+      commentary: "End of over 1. 8 runs from it.",
     },
   },
   {
@@ -122,34 +81,29 @@ const mockEvents = [
       runs: 0,
       commentary: "Dot ball, well bowled.",
       batsman: "V. Kohli",
-      bowler: "J. Anderson",
-      over: 1.5,
-    },
-  },
-  {
-    type: EVENT_TYPES.OVER_COMPLETE,
-    payload: {
-      over: 2,
-      runs: 13,
-      commentary: "End of over 2. 13 runs from it.",
-    },
-  },
-  {
-    type: "UNKNOWN_EVENT_1" as any,
-    payload: {
-      message: "This is an unknown event type",
-      data: { test: "value", number: 42 },
-      commentary: "Something unexpected happened!",
+      bowler: "S. Broad",
+      over: 1.1,
     },
   },
   {
     type: EVENT_TYPES.BALL,
     payload: {
       runs: 1,
-      commentary: "Back to normal play.",
+      commentary: "Single to mid-wicket.",
       batsman: "V. Kohli",
-      bowler: "J. Anderson",
-      over: 2.1,
+      bowler: "S. Broad",
+      over: 1.2,
+    },
+  },
+  {
+    type: EVENT_TYPES.WICKET,
+    payload: {
+      playerOut: "V. Kohli",
+      dismissal: DISMISSAL_TYPES.CAUGHT,
+      commentary: "Big appeal... and he's out! Caught behind!",
+      batsman: "V. Kohli",
+      bowler: "S. Broad",
+      over: 1.3,
     },
   },
   {
@@ -157,7 +111,45 @@ const mockEvents = [
     payload: {
       runs: 2,
       commentary: "Good start to the innings.",
-      batsman: "V. Kohli",
+      batsman: "R. Sharma",
+      bowler: "S. Broad",
+      over: 1.4,
+    },
+  },
+  {
+    type: EVENT_TYPES.BALL,
+    payload: {
+      runs: 0,
+      commentary: "Dot ball, well bowled.",
+      batsman: "R. Sharma",
+      bowler: "S. Broad",
+      over: 1.5,
+    },
+  },
+  {
+    type: EVENT_TYPES.OVER_COMPLETE,
+    payload: {
+      over: 2,
+      runs: 3,
+      commentary: "End of over 2. 3 runs from it.",
+    },
+  },
+  {
+    type: EVENT_TYPES.BALL,
+    payload: {
+      runs: 1,
+      commentary: "Back to normal play.",
+      batsman: "R. Sharma",
+      bowler: "J. Anderson",
+      over: 2.1,
+    },
+  },
+  {
+    type: EVENT_TYPES.SIX,
+    payload: {
+      runs: 6,
+      commentary: "Massive six over long-on! What a shot!",
+      batsman: "R. Sharma",
       bowler: "J. Anderson",
       over: 2.2,
     },
@@ -167,7 +159,7 @@ const mockEvents = [
     payload: {
       runs: 1,
       commentary: "Single to mid-wicket.",
-      batsman: "V. Kohli",
+      batsman: "R. Sharma",
       bowler: "J. Anderson",
       over: 2.3,
     },
@@ -177,7 +169,7 @@ const mockEvents = [
     payload: {
       runs: 3,
       commentary: "Three runs, good running between the wickets.",
-      batsman: "V. Kohli",
+      batsman: "R. Sharma",
       bowler: "J. Anderson",
       over: 2.4,
     },
@@ -194,7 +186,7 @@ const mockEvents = [
     payload: {
       runs: 1,
       commentary: "Back to normal play after the break.",
-      batsman: "V. Kohli",
+      batsman: "R. Sharma",
       bowler: "J. Anderson",
       over: 2.5,
     },
