@@ -46,6 +46,15 @@ const scoreSlice = createSlice({
       switch (event.type) {
         case "BALL":
           const { runs, batsman, bowler } = event.payload;
+
+          if (
+            state.matchStatus === "Not Started" &&
+            state.totalRuns === 0 &&
+            state.ballsInOver === 0
+          ) {
+            state.matchStatus = "Match Start";
+          }
+
           state.totalRuns += runs;
           state.ballsInOver += 1;
 
@@ -75,6 +84,14 @@ const scoreSlice = createSlice({
           const boundaryRuns = event.payload.runs;
           const boundaryBatsman = event.payload.batsman;
           const boundaryBowler = event.payload.bowler;
+
+          if (
+            state.matchStatus === "Not Started" &&
+            state.totalRuns === 0 &&
+            state.ballsInOver === 0
+          ) {
+            state.matchStatus = "Match Start";
+          }
 
           state.totalRuns += boundaryRuns;
           state.ballsInOver += 1;
@@ -110,6 +127,15 @@ const scoreSlice = createSlice({
             batsman: wicketBatsman,
             bowler: wicketBowler,
           } = event.payload;
+
+          if (
+            state.matchStatus === "Not Started" &&
+            state.totalRuns === 0 &&
+            state.ballsInOver === 0
+          ) {
+            state.matchStatus = "Match Start";
+          }
+
           state.totalWickets += 1;
           state.ballsInOver += 1;
 

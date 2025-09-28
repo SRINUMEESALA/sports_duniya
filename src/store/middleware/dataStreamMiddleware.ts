@@ -146,17 +146,57 @@ const mockEvents = [
     type: EVENT_TYPES.BALL,
     payload: {
       runs: 1,
-      commentary: "Back to normal play after the unknown event.",
+      commentary: "Back to normal play.",
       batsman: "V. Kohli",
       bowler: "J. Anderson",
       over: 2.1,
     },
   },
   {
+    type: EVENT_TYPES.BALL,
+    payload: {
+      runs: 2,
+      commentary: "Good start to the innings.",
+      batsman: "V. Kohli",
+      bowler: "J. Anderson",
+      over: 2.2,
+    },
+  },
+  {
+    type: EVENT_TYPES.BALL,
+    payload: {
+      runs: 1,
+      commentary: "Single to mid-wicket.",
+      batsman: "V. Kohli",
+      bowler: "J. Anderson",
+      over: 2.3,
+    },
+  },
+  {
+    type: EVENT_TYPES.BALL,
+    payload: {
+      runs: 3,
+      commentary: "Three runs, good running between the wickets.",
+      batsman: "V. Kohli",
+      bowler: "J. Anderson",
+      over: 2.4,
+    },
+  },
+  {
     type: EVENT_TYPES.MATCH_STATUS,
     payload: {
       status: MATCH_STATUS.INNINGS_BREAK,
-      summary: "India finishes on 175/7.",
+      summary: "India finishes on 31/1.",
+    },
+  },
+  {
+    type: EVENT_TYPES.BALL,
+    payload: {
+      runs: 1,
+      commentary: "Back to normal play after the break.",
+      batsman: "V. Kohli",
+      bowler: "J. Anderson",
+      over: 2.5,
     },
   },
 ];
@@ -173,7 +213,7 @@ export const dataStreamMiddleware: Middleware =
         clearInterval(streamingInterval);
       }
 
-      streamingInterval = setInterval(() => {
+      const processNextEvent = () => {
         if (currentIndex < mockEvents.length) {
           const event = {
             ...mockEvents[currentIndex],
@@ -185,11 +225,38 @@ export const dataStreamMiddleware: Middleware =
           store.dispatch(incrementEventIndex());
 
           currentIndex++;
+
+          if (event.type === EVENT_TYPES.MATCH_STATUS) {
+            if (streamingInterval) {
+              clearInterval(streamingInterval);
+            }
+
+            setTimeout(() => {
+              setTimeout(() => {
+                const matchStartEvent = {
+                  type: EVENT_TYPES.MATCH_STATUS,
+                  payload: {
+                    status: MATCH_STATUS.MATCH_START,
+                    summary: "Play resumes after the break.",
+                  },
+                  id: `status_resume_${Date.now()}`,
+                };
+
+                store.dispatch(addEvent(matchStartEvent));
+                store.dispatch(processEvent(matchStartEvent));
+
+                streamingInterval = setInterval(processNextEvent, 1500);
+                store.dispatch(setStreamingInterval(streamingInterval));
+              }, 3000);
+            }, 3000);
+          }
         } else {
           currentIndex = 0;
           store.dispatch(resetEventIndex());
         }
-      }, 1500);
+      };
+
+      streamingInterval = setInterval(processNextEvent, 2000);
 
       store.dispatch(setStreamingInterval(streamingInterval));
     }

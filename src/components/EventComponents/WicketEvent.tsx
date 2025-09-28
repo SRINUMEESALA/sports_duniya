@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { View, Text, StyleSheet, Animated } from "react-native";
 import { CricketEvent } from "../../types/CricketEvent";
 
 interface WicketEventProps {
@@ -10,8 +10,48 @@ const WicketEvent = ({ event }: WicketEventProps) => {
   const { playerOut, dismissal, commentary, batsman, bowler, over } =
     event.payload as any;
 
+  const scaleAnim = useRef(new Animated.Value(0.8)).current;
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    Animated.sequence([
+      Animated.timing(scaleAnim, {
+        toValue: 1.05,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 1,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    const pulseAnimation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1.1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    pulseAnimation.start();
+
+    return () => {
+      pulseAnimation.stop();
+    };
+  }, []);
+
   return (
-    <View style={styles.container}>
+    <Animated.View
+      style={[styles.container, { transform: [{ scale: scaleAnim }] }]}
+    >
       <View style={styles.contentRow}>
         <View style={styles.commentarySection}>
           <Text style={styles.commentary}>{commentary}</Text>
@@ -26,31 +66,35 @@ const WicketEvent = ({ event }: WicketEventProps) => {
             <Text style={styles.bowler}>{bowler}</Text>
           </View>
         </View>
-        <View style={styles.wicketBadge}>
+        <Animated.View
+          style={[styles.wicketBadge, { transform: [{ scale: pulseAnim }] }]}
+        >
           <Text style={styles.wicketText}>WICKET!</Text>
-        </View>
+        </Animated.View>
       </View>
-    </View>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#ffffff",
-    padding: 16,
-    marginVertical: 6,
-    marginHorizontal: 20,
-    borderRadius: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: "#f44336",
-    shadowColor: "#f44336",
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+    borderRadius: 16,
+    borderLeftWidth: 6,
+    borderLeftColor: "#d32f2f",
+    borderWidth: 2,
+    borderColor: "#ffebee",
+    shadowColor: "#d32f2f",
     shadowOffset: {
       width: 0,
-      height: 4,
+      height: 6,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    elevation: 7,
+    shadowOpacity: 0.35,
+    shadowRadius: 12,
+    elevation: 12,
   },
   contentRow: {
     flexDirection: "row",
@@ -62,24 +106,33 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   wicketBadge: {
-    backgroundColor: "#f44336",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
-    minWidth: 60,
+    backgroundColor: "#d32f2f",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+    minWidth: 80,
     alignItems: "center",
+    shadowColor: "#d32f2f",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    elevation: 8,
   },
   wicketText: {
-    fontSize: 11,
+    fontSize: 12,
     color: "#ffffff",
-    fontWeight: "bold",
+    fontWeight: "900",
+    letterSpacing: 1,
   },
   commentary: {
-    fontSize: 15,
+    fontSize: 16,
     color: "#c62828",
-    lineHeight: 22,
-    fontWeight: "700",
-    marginBottom: 8,
+    lineHeight: 24,
+    fontWeight: "800",
+    marginBottom: 10,
   },
   dismissalInfo: {
     flexDirection: "row",
@@ -126,4 +179,3 @@ const styles = StyleSheet.create({
 });
 
 export default WicketEvent;
-

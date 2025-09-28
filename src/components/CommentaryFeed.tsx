@@ -26,6 +26,14 @@ const CommentaryFeed = () => {
   const { events } = useAppSelector((state) => state.commentary);
   const score = useAppSelector((state) => state.score);
 
+  const feedEvents = events.filter(
+    (event) => event.type !== EVENT_TYPES.MATCH_STATUS
+  );
+
+  const latestMatchStatusEvent = events
+    .filter((event) => event.type === EVENT_TYPES.MATCH_STATUS)
+    .slice(-1)[0];
+
   const flatListRef = useRef(null);
   const shouldAutoScroll = useRef(true);
   const insets = useSafeAreaInsets();
@@ -41,14 +49,18 @@ const CommentaryFeed = () => {
   }, []);
 
   useEffect(() => {
-    if (events.length > 0 && flatListRef.current && shouldAutoScroll.current) {
+    if (
+      feedEvents.length > 0 &&
+      flatListRef.current &&
+      shouldAutoScroll.current
+    ) {
       setTimeout(() => {
         if (flatListRef.current) {
           flatListRef.current.scrollToEnd({ animated: true });
         }
       }, 100);
     }
-  }, [events.length]);
+  }, [feedEvents.length]);
 
   const renderEvent = ({
     item: event,
@@ -62,7 +74,6 @@ const CommentaryFeed = () => {
       [EVENT_TYPES.BOUNDARY]: BoundaryEvent,
       [EVENT_TYPES.SIX]: SixEvent,
       [EVENT_TYPES.WICKET]: WicketEvent,
-      [EVENT_TYPES.MATCH_STATUS]: MatchStatusEvent,
       [EVENT_TYPES.OVER_COMPLETE]: OverCompleteEvent,
     };
 
@@ -71,7 +82,6 @@ const CommentaryFeed = () => {
     if (EventComponent) {
       return <EventComponent event={event} />;
     } else {
-      // Unknown event type, will show fallback UI
       return <UnknownEvent event={event} />;
     }
   };
@@ -88,6 +98,7 @@ const CommentaryFeed = () => {
         totalWickets={score.totalWickets}
         currentOver={score.currentOver}
         ballsInOver={score.ballsInOver}
+        matchStatus={score.matchStatus}
       />
 
       <View
@@ -99,7 +110,7 @@ const CommentaryFeed = () => {
         <CommentaryHeader />
         <FlatList
           ref={flatListRef}
-          data={events}
+          data={feedEvents}
           renderItem={renderEvent}
           keyExtractor={(item) => item.id}
           style={styles.feedList}
@@ -108,7 +119,7 @@ const CommentaryFeed = () => {
           inverted={false}
           onContentSizeChange={() => {
             if (
-              events.length > 0 &&
+              feedEvents.length > 0 &&
               flatListRef.current &&
               shouldAutoScroll.current
             ) {
@@ -134,6 +145,10 @@ const CommentaryFeed = () => {
           windowSize={10}
         />
       </View>
+
+      {latestMatchStatusEvent && (
+        <MatchStatusEvent event={latestMatchStatusEvent} />
+      )}
     </SafeAreaView>
   );
 };

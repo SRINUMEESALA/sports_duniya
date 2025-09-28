@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { View, Text, StyleSheet, Animated } from "react-native";
 import { CricketEvent } from "../../types/CricketEvent";
 
 interface BallEventProps {
@@ -9,8 +9,18 @@ interface BallEventProps {
 const BallEvent = ({ event }: BallEventProps) => {
   const { runs, commentary, batsman, bowler, over } = event.payload as any;
 
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       <View style={styles.contentRow}>
         <View style={styles.commentarySection}>
           <Text style={styles.commentary}>{commentary}</Text>
@@ -24,27 +34,27 @@ const BallEvent = ({ event }: BallEventProps) => {
           <Text style={styles.runsText}>+{runs}</Text>
         </View>
       </View>
-    </View>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#ffffff",
-    padding: 16,
-    marginVertical: 6,
-    marginHorizontal: 20,
-    borderRadius: 12,
-    borderLeftWidth: 4,
+    padding: 14,
+    marginVertical: 4,
+    marginHorizontal: 22,
+    borderRadius: 10,
+    borderLeftWidth: 3,
     borderLeftColor: "#6c757d",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 1,
     },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
   },
   contentRow: {
     flexDirection: "row",
@@ -56,47 +66,49 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   runsBadge: {
-    backgroundColor: "#d4edda",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
-    minWidth: 50,
+    backgroundColor: "#f8f9fa",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 6,
+    minWidth: 45,
     alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#e9ecef",
   },
   runsText: {
-    fontSize: 16,
-    color: "#28a745",
-    fontWeight: "bold",
+    fontSize: 14,
+    color: "#6c757d",
+    fontWeight: "600",
   },
   commentary: {
-    fontSize: 15,
-    color: "#2c3e50",
-    lineHeight: 22,
-    marginBottom: 8,
-    fontWeight: "500",
+    fontSize: 14,
+    color: "#495057",
+    lineHeight: 20,
+    marginBottom: 6,
+    fontWeight: "400",
   },
   details: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f8f9fa",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
+    backgroundColor: "#f1f3f4",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 6,
   },
   batsman: {
-    fontSize: 13,
-    color: "#495057",
-    fontWeight: "600",
-  },
-  separator: {
     fontSize: 12,
     color: "#6c757d",
-    marginHorizontal: 8,
+    fontWeight: "500",
+  },
+  separator: {
+    fontSize: 10,
+    color: "#adb5bd",
+    marginHorizontal: 6,
   },
   bowler: {
-    fontSize: 13,
-    color: "#495057",
-    fontWeight: "600",
+    fontSize: 12,
+    color: "#6c757d",
+    fontWeight: "500",
   },
 });
 
